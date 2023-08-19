@@ -1,6 +1,6 @@
 ﻿namespace Core.Entities
 {
-    public class Order: AuditMetadata
+    public class Order : AuditMetadata
     {
         public int Id { get; set; }
         public string? UserTelegramId { get; set; }
@@ -13,6 +13,7 @@
 
     public enum OrderStatus
     {
+        Canceled,
         Created,
         Approved,
         Paid,
