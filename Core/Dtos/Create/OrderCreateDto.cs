@@ -1,6 +1,6 @@
 ﻿namespace Core.Dtos.Create
 {
-    public class OrdeCreateDto
+    public class OrderCreateDto
     {
         public string? UserTelegramId { get; set; }
         public string? Name { get; set; }
