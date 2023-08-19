@@ -1,4 +1,4 @@
-# TelegramWebAPIShop [![Build & Test](https://github.com/johnburitto/TelegramWebAPIShop/actions/workflows/dotnet.yml/badge.svg?branch=development)
+# TelegramWebAPIShop [![Build & Test](https://github.com/johnburitto/TelegramWebAPIShop/actions/workflows/dotnet.yml/badge.svg?branch=development)](https://github.com/johnburitto/TelegramWebAPIShop/actions/workflows/dotnet.yml)
 There is an app than emulate work of real world online shop with user interface as telegram bot.
 
 # Functionality
