@@ -37,10 +37,9 @@ namespace Infrastructure.Services.Impls
 
         public async Task<List<int>?> AddProductToCartAsync(string key, int id)
         {
-            var cart = await GetDataAsync<List<int>>(key);
+            var cart = await GetDataAsync<List<int>>(key) ?? throw new ArgumentNullException($"There is no cart with user id {key}");
 
-            cart?.Add(id);
-
+            cart.Add(id);
             await SetDataAsync(key, cart, 3);
 
             return await GetDataAsync<List<int>>(key);

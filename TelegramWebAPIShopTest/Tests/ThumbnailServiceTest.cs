@@ -13,12 +13,12 @@ namespace TelegramWebAPIShopTest.Tests
     public class ThumbnailServiceTest
     {
         private readonly Mock<AppDbContext> _context = new Mock<AppDbContext>();
-        private readonly Mapper _mapper = new Mapper(new MapperConfiguration(confiration => confiration.AddProfile(new ThumbnailProfile())));
+        private readonly Mock<Mapper> _mapper = new Mock<Mapper>(new MapperConfiguration(confiration => confiration.AddProfile(new ThumbnailProfile())));
         private readonly ThumbnailService _underTest;
 
         public ThumbnailServiceTest()
         {
-            _underTest = new ThumbnailService(_context.Object, _mapper);
+            _underTest = new ThumbnailService(_context.Object, _mapper.Object);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace TelegramWebAPIShopTest.Tests
                     Id = 113,
                     URI = "D://Hello",
                     ProductId = 5
-                },
+                }
             };
 
             _context.Setup(_ => _.Thumbnails).ReturnsDbSet(thunbnails);
@@ -96,7 +96,7 @@ namespace TelegramWebAPIShopTest.Tests
             var result = await _underTest.GetByIdAsync(1);
 
             // Then
-            Assert.NotNull(thumbnail);
+            Assert.NotNull(result);
             Assert.IsType<Thumbnail>(result);
             Assert.Equal(thumbnail, result);
             Assert.Equal(thumbnail.Id, result.Id);
@@ -121,7 +121,7 @@ namespace TelegramWebAPIShopTest.Tests
                     Id = 113,
                     URI = "D://Hello",
                     ProductId = 5
-                },
+                }
             };
 
             _context.Setup(_ => _.Thumbnails).ReturnsDbSet(thunbnails);
