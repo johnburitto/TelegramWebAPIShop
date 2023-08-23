@@ -6,10 +6,15 @@ namespace Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Discount> Discounts { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Thumbnail> Thumbnails { get; set; }
+        public virtual DbSet<Discount> Discounts { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Thumbnail> Thumbnails { get; set; }
+
+        public AppDbContext()
+        {
+
+        }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         { 
