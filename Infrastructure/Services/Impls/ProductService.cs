@@ -40,17 +40,17 @@ namespace Infrastructure.Services.Impls
             return _context.Products
                 .Include(product => product.Thumbnails)
                 .Include(product => product.Orders)
-                .Include(product => product.Discounts == null ? null : product.Discounts.Where(discount => discount.Status == DiscountStatus.Active))
+                .Include(product => product.Discounts.Where(discount => discount.Status == DiscountStatus.Active))
                 .ToListAsync();
         }
 
-        public Task<Product?> GetByIdAsync(int id)
+        public virtual Task<Product?> GetByIdAsync(int id)
         {
             return _context.Products
                 .Where(product => product.Id == id)
                 .Include(product => product.Thumbnails)
                 .Include(product => product.Orders)
-                .Include(product => product.Discounts == null ? null : product.Discounts.Where(discount => discount.Status == DiscountStatus.Active))
+                .Include(product => product.Discounts.Where(discount => discount.Status == DiscountStatus.Active))
                 .FirstOrDefaultAsync();
         }
 

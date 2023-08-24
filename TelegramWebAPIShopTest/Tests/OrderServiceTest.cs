@@ -163,6 +163,7 @@ namespace TelegramWebAPIShopTest.Tests
                 ProductsIds = new List<int> { 1, 90, 3, 567 }
             };
 
+            _productService.Setup(_ => _.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Product { });
             _context.Setup(_ => _.Orders).ReturnsDbSet(new List<Order> { });
             _context.Setup(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -176,6 +177,7 @@ namespace TelegramWebAPIShopTest.Tests
             Assert.Equal(dto.Name, result.Name);
             Assert.Equal(dto.Phone, result.Phone);
             Assert.Equal(dto.Address, result.Address);
+            _productService.Verify(_ => _.GetByIdAsync(It.IsAny<int>()), Times.Exactly(dto.ProductsIds.Count));
             _context.Verify(_ => _.Orders.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }
@@ -202,6 +204,7 @@ namespace TelegramWebAPIShopTest.Tests
                 ProductsIds = new List<int> { 1, 90, 3, 567 }
             };
 
+            _productService.Setup(_ => _.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Product { });
             _context.Setup(_ => _.Orders).ReturnsDbSet(new List<Order> { order });
             _context.Setup(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -215,6 +218,7 @@ namespace TelegramWebAPIShopTest.Tests
             Assert.Equal(dto.Name, result.Name);
             Assert.Equal(dto.Phone, result.Phone);
             Assert.Equal(dto.Address, result.Address);
+            _productService.Verify(_ => _.GetByIdAsync(It.IsAny<int>()), Times.Exactly(dto.ProductsIds.Count));
             _context.Verify(_ => _.Orders.Update(It.IsAny<Order>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }

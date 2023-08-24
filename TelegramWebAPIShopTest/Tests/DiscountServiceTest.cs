@@ -170,6 +170,7 @@ namespace TelegramWebAPIShopTest.Tests
                 ProductsIds = new List<int> { 1, 90, 3, 567 }
             };
 
+            _productService.Setup(_ => _.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Product { });
             _context.Setup(_ => _.Discounts).ReturnsDbSet(new List<Discount> { });
             _context.Setup(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -186,6 +187,7 @@ namespace TelegramWebAPIShopTest.Tests
             Assert.Equal(dto.EndDate, result.EndDate);
             Assert.True(dto.DiscoutInPercent > 0, "Expected DiscoutInPercent to be greater than 0.");
             Assert.True(dto.EndDate > dto.StartDate, "Expected EndDate to be greater than StartDate.");
+            _productService.Verify(_ => _.GetByIdAsync(It.IsAny<int>()), Times.Exactly(dto.ProductsIds.Count));
             _context.Verify(_ => _.Discounts.AddAsync(It.IsAny<Discount>(), It.IsAny<CancellationToken>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }
@@ -214,6 +216,7 @@ namespace TelegramWebAPIShopTest.Tests
                 ProductsIds = new List<int> { 1, 90, 3, 567 }
             };
 
+            _productService.Setup(_ => _.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Product { });
             _context.Setup(_ => _.Discounts).ReturnsDbSet(new List<Discount> { discount });
             _context.Setup(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -230,6 +233,7 @@ namespace TelegramWebAPIShopTest.Tests
             Assert.Equal(dto.EndDate, result.EndDate);
             Assert.True(dto.DiscoutInPercent > 0, "Expected DiscoutInPercent to be greater than 0.");
             Assert.True(dto.EndDate > dto.StartDate, "Expected EndDate to be greater than StartDate.");
+            _productService.Verify(_ => _.GetByIdAsync(It.IsAny<int>()), Times.Exactly(dto.ProductsIds.Count));
             _context.Verify(_ => _.Discounts.Update(It.IsAny<Discount>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }

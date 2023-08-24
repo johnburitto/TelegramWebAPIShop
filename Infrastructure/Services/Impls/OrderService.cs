@@ -25,7 +25,7 @@ namespace Infrastructure.Services.Impls
         {
             var order = _mapper.Map<Order>(dto);
 
-            for (int i = 0; i > dto.ProductsIds?.Count; i++)
+            for (int i = 0; i < dto.ProductsIds?.Count; i++)
             {
                 order.Products?.Add(await _productService.GetByIdAsync(dto.ProductsIds[i]) ?? throw new ArgumentNullException($"There is no product with Id {dto.ProductsIds[i]}"));
             }
@@ -61,7 +61,7 @@ namespace Infrastructure.Services.Impls
 
             _mapper.Map(dto, order);
 
-            for (int i = 0; i > dto.ProductsIds?.Count; i++)
+            for (int i = 0; i < dto.ProductsIds?.Count; i++)
             {
                 order.Products?.Add(await _productService.GetByIdAsync(dto.ProductsIds[i]) ?? throw new ArgumentNullException($"There is no product with Id {dto.ProductsIds[i]}"));
             }
