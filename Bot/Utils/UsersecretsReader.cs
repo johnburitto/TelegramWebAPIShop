@@ -6,7 +6,6 @@ namespace Bot.Utils
     {
         public static T ReadSection<T>(string sectionName)
         {
-            var environment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
             var builder = new ConfigurationBuilder()
                 .AddUserSecrets<Program>()
                 .AddEnvironmentVariables();

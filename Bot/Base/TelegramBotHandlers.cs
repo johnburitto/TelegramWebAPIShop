@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using Bot.Commands;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -6,6 +7,16 @@ namespace Bot.Base
 {
     public class TelegramBotHandlers : ITelegramBotHandlers
     {
+        private readonly List<Command> _commands;
+
+        public TelegramBotHandlers()
+        {
+            _commands = new List<Command>
+            {
+                new ReplyCommand()
+            };
+        }
+
         public async Task MessageHandlerAsync(ITelegramBotClient client, Update update, CancellationToken token)
         {
             switch (update.Type)
@@ -24,7 +35,10 @@ namespace Bot.Base
 
         private async Task MessageHandlerAsync(ITelegramBotClient client, Message message)
         {
-            await client.SendTextMessageAsync(message.Chat.Id, $"Ви написали:\n{message.Text}");
+            foreach (var el in _commands)
+            {
+                await el.TryExecute(client, message);
+            }
         }
     }
 }
