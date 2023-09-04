@@ -9,7 +9,7 @@ namespace Bot.Base
         protected TelegramBotClient? Bot { get; set; }
         protected ReceiverOptions? ReceiverOptions { get; set; }
         protected THandlers Handlers => new THandlers();
-        protected string Token => UsersecretsReader.ReadSection<string>("Token");
+        protected string Token => ConfigurationReader.ReadSection<string>("Token");
         protected CancellationTokenSource CancellationTokenSource => new CancellationTokenSource();
 
         public void InitBot()

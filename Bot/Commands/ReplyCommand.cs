@@ -11,13 +11,5 @@ namespace Bot.Commands
         {
             await client.SendTextMessageAsync(message.Chat.Id, $"Ви написали:\n{message.Text?.Replace("/reply ", "")}");
         }
-
-        public override async Task TryExecute(ITelegramBotClient client, Message message)
-        {
-            if (IsContains(message.Text ?? string.Empty))
-            {
-                await Execute(client, message);
-            }
-        }
     }
 }

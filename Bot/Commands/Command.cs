@@ -8,7 +8,14 @@ namespace Bot.Commands
         protected abstract List<string> Names { get; set; }
 
         public abstract Task Execute(ITelegramBotClient client, Message message);
-        public abstract Task TryExecute(ITelegramBotClient client, Message message);
+
+        public async Task TryExecute(ITelegramBotClient client, Message message)
+        {
+            if (IsContains(message.Text ?? string.Empty))
+            {
+                await Execute(client, message);
+            }
+        }
 
         public bool IsContains(string message)
         {

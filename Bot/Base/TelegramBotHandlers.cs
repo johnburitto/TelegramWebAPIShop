@@ -1,5 +1,6 @@
 ﻿using Bot.Commands;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -13,7 +14,9 @@ namespace Bot.Base
         {
             _commands = new List<Command>
             {
-                new ReplyCommand()
+                new StartCommand(),
+                new ReplyCommand(),
+                new GetAllProductsCommand()
             };
         }
 
@@ -30,7 +33,15 @@ namespace Bot.Base
 
         public Task ErrorHandlerAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var errorMessage = exception switch
+            {
+                ApiRequestException apiRequestException => $"Telegram Bot API excepton:\n {apiRequestException.ErrorCode}\n {apiRequestException.Message}",
+                _ => exception.ToString()
+            };
+
+            Console.WriteLine(errorMessage);
+
+            return Task.CompletedTask;
         }
 
         private async Task MessageHandlerAsync(ITelegramBotClient client, Message message)
