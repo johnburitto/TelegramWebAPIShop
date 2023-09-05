@@ -39,7 +39,7 @@ namespace Bot.Base
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(errorMessage);
+            Console.WriteLine(exception);
 
             return Task.CompletedTask;
         }

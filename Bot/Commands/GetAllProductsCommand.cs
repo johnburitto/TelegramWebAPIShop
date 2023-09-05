@@ -18,9 +18,13 @@ namespace Bot.Commands
 
             foreach (var el in produts ?? new())
             {
-                await client.SendTextMessageAsync(message.Chat.Id, parseMode: ParseMode.MarkdownV2, text: $"*Назва:* {el.Name}\n" + 
-                                                                                                          $"*Опис:* {el.Description}\n" + 
-                                                                                                          $"*Ціна:* {el.Price}");
+                var photo = await RequestClient.Client.GetAsync(el.Thumbnails?.First()?.URI ?? "");
+
+                await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.MarkdownV2,
+                    photo: InputFile.FromStream(photo.Content.ReadAsStream()),
+                    caption: $"*Назва:* {el.Name}\n" + 
+                             $"*Опис:* {el.Description}\n" + 
+                             $"*Ціна:* {el.Price}");
             } 
         }
     }
