@@ -22,8 +22,8 @@ namespace Bot.Commands
 
                 await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.MarkdownV2,
                     photo: InputFile.FromStream(photo.Content.ReadAsStream()),
-                    caption: $"*Назва:* {el.Name}\n" + 
-                             $"*Опис:* {el.Description}\n" + 
+                    caption: $"*{el.Name}*\n\n" + 
+                             $"{el.Description}\n\n" + 
                              $"*Ціна:* {el.Price}");
             } 
         }
