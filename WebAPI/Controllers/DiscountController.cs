@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetDiscountByIdAsync")]
-        [ProducesResponseType(typeof(List<Discount>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Discount), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Discount?>> GetByIdAsync(int id)
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(List<Discount>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Discount), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Discount>> CreateAsync([FromBody] DiscountCreateDto dto)
         {
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(List<Discount>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Discount), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

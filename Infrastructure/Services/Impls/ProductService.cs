@@ -54,6 +54,22 @@ namespace Infrastructure.Services.Impls
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Product> TryGetNextAsync(int id)
+        {
+            var products = await GetAllAsync();
+            var index = products.IndexOf(products.Find(product => product.Id == id) ?? throw new Exception($"There isn't product with id {id}"));
+
+            return index >= products.Count - 1 ? products[products.Count - 1] : products[index + 1];
+        }
+
+        public async Task<Product> TryGetPreviousAsync(int id)
+        {
+            var products = await GetAllAsync();
+            var index = products.IndexOf(products.Find(product => product.Id == id) ?? throw new Exception($"There isn't product with id {id}"));
+
+            return index <= 0 ? products[0] : products[index - 1];
+        }
+
         public async Task<Product> UpdateAsync(ProductUpdateDto dto)
         {
             var product = await GetByIdAsync(dto.Id) ?? throw new ArgumentNullException($"There is no product with Id {dto.Id}");

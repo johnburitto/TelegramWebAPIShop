@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Commands
 {
@@ -14,18 +15,28 @@ namespace Bot.Commands
         public override async Task Execute(ITelegramBotClient client, Message message)
         {
             var response = await RequestClient.Client.GetAsync("api/Product/");
-            var produts = JsonConvert.DeserializeObject<List<Product>>(await response.Content.ReadAsStringAsync());
-
-            foreach (var el in produts ?? new())
+            var product = JsonConvert.DeserializeObject<List<Product>>(await response.Content.ReadAsStringAsync())?.First();
+            var keyboard = new InlineKeyboardMarkup(new[]
             {
-                var photo = await RequestClient.Client.GetAsync(el.Thumbnails?.First()?.URI ?? "");
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData("⬅️ Попередній", "previous"),
+                    InlineKeyboardButton.WithCallbackData("Наступний ➡️", "next"),
+                }
+            });
+            var photo = await RequestClient.Client.GetAsync(product?.Thumbnails?.First()?.URI ?? "");
 
-                await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.MarkdownV2,
-                    photo: InputFile.FromStream(photo.Content.ReadAsStream()),
-                    caption: $"*{el.Name}*\n\n" + 
-                             $"{el.Description}\n\n" + 
-                             $"*Ціна:* {el.Price}");
-            } 
+            await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.Html,
+                photo: InputFile.FromStream(photo.Content.ReadAsStream()),
+                caption: $"<b>{product?.Name} [{product?.Id}]</b>\n\n" +
+                         $"{product?.Description}\n\n" +
+                         $"<b>Ціна:</b> {product?.Price}",
+                replyMarkup: keyboard);
+        }
+
+        public override Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
+        {
+            throw new NotImplementedException();
         }
     }
 }

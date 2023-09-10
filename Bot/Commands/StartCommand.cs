@@ -20,5 +20,10 @@ namespace Bot.Commands
 
             await client.SendTextMessageAsync(chatId: message.Chat.Id, text: "Виберіть опцію:", replyMarkup: keyboard);
         }
+
+        public override Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
