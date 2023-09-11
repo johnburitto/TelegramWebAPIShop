@@ -18,7 +18,9 @@ namespace Bot.Base
                 new ReplyCommand(),
                 new GetAllProductsCommand(),
                 new GetNextProductCommand(),
-                new GetPreviousProductCommand()
+                new GetPreviousProductCommand(),
+                new AddProductToCartCommand(),
+                new GetCartCommand()
             };
         }
 

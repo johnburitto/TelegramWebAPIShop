@@ -21,7 +21,11 @@ namespace Bot.Commands
                 new[]
                 {
                     InlineKeyboardButton.WithCallbackData("⬅️ Попередній", "previous"),
-                    InlineKeyboardButton.WithCallbackData("Наступний ➡️", "next"),
+                    InlineKeyboardButton.WithCallbackData("Наступний ➡️", "next")
+                },
+                new []
+                {
+                    InlineKeyboardButton.WithCallbackData("🛒 Додати до кошика", "add_to_cart")
                 }
             });
             var photo = await RequestClient.Client.GetAsync(product?.Thumbnails?.First()?.URI ?? "");

@@ -12,7 +12,8 @@ namespace Bot.Commands
         {
             ReplyKeyboardMarkup keyboard = new(new[]
             {
-                new KeyboardButton[] { "🎁 Всі товари" }
+                new KeyboardButton[] { "🎁 Всі товари" },
+                new KeyboardButton[] { "🛒 Мій кошик" }
             })
             {
                 ResizeKeyboard = true

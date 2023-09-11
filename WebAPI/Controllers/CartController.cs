@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
         {
             var cart = await _service.GetDataAsync<List<int>>(key);
 
-            return cart != null ? Ok(cart) : NotFound($"There is no cart of user {key}.");
+            return Ok(cart);
         }
 
         [HttpPost]
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task SetDataAsync([FromBody] CartCreateDto dto)
         {
-            await _service.SetDataAsync(dto.UserTelegramId ?? throw new ArgumentNullException(nameof(dto.UserTelegramId)), 
+            await _service.SetDataAsync(dto.UserTelegramId.ToString() ?? throw new ArgumentNullException(nameof(dto.UserTelegramId)), 
                 dto.Products, dto.ExpirationTimeInHours);
         }
 
