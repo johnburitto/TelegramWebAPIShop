@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetOrderByIdAsync")]
-        [ProducesResponseType(typeof(List<Order>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Order?>> GetByIdAsync(int id)
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(List<Order>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Order>> CreateAsync([FromBody] OrderCreateDto dto)
         {
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(List<Order>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

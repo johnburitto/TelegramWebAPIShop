@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetProductByIdAsync")]
-        [ProducesResponseType(typeof(List<Product>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Product?>> GetByIdAsync(int id)
@@ -36,8 +36,28 @@ namespace WebAPI.Controllers
             return product != null ? Ok(product) : NotFound();
         }
 
+        [HttpGet("{id}/next")]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Product?>> TryGetNextAsync(int id)
+        {
+            var product = await _service.TryGetNextAsync(id);
+
+            return Ok(product);
+        }
+
+        [HttpGet("{id}/previous")]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Product>> TryGetPreviousAsync(int id)
+        {
+            var product = await _service.TryGetPreviousAsync(id);
+
+            return Ok(product);
+        }
+
         [HttpPost]
-        [ProducesResponseType(typeof(List<Product>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Product>> CreateAsync([FromBody] ProductCreateDto dto)
         {
@@ -47,7 +67,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(List<Product>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetThumbnailByIdAsync")]
-        [ProducesResponseType(typeof(List<Thumbnail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Thumbnail), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Thumbnail?>> GetByIdAsync(int id) 
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(List<Thumbnail>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Thumbnail), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Thumbnail>> CreateAsync([FromBody] ThumbnailCreateDto dto)
         {
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(List<Thumbnail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Thumbnail), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

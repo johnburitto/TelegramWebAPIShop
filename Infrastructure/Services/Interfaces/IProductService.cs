@@ -6,6 +6,7 @@ namespace Infrastructure.Services.Interfaces
 {
     public interface IProductService : ICrudService<Product, ProductCreateDto, ProductUpdateDto>
     {
-
+        Task<Product> TryGetNextAsync(int id);
+        Task<Product> TryGetPreviousAsync(int id);
     }
 }
