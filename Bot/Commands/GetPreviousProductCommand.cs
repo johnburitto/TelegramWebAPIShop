@@ -31,6 +31,8 @@ namespace Bot.Commands
             else
             {
                 var photo = await RequestClient.Client.GetAsync(product?.Thumbnails?.First()?.URI ?? "");
+                var discountPrice = product?.Price - product?.Price *
+                    product?.Discounts?.Where(discount => discount.Status == DiscountStatus.Active).Select(discount => discount.NormalizedDiscount).Sum();
 
                 await client.EditMessageMediaAsync(callbackQuery.Message?.Chat ?? throw new Exception("Chat can't be null"),
                         callbackQuery.Message.MessageId, media: new InputMediaPhoto(InputFile.FromStream(photo.Content.ReadAsStream(), "photo")));
@@ -38,7 +40,7 @@ namespace Bot.Commands
                         callbackQuery.Message.MessageId, parseMode: ParseMode.Html,
                         caption: $"<b>{product?.Name} [{product?.Id}]</b>\n\n" +
                                  $"{product?.Description}\n\n" +
-                                 $"<b>Ціна:</b> {product?.Price}",
+                                 (discountPrice < product?.Price ? $"<b>Ціна:</b><s> {product?.Price} </s>\t{discountPrice}" : $"<b>Ціна:</b> {product?.Price}"),
                         replyMarkup: callbackQuery.Message.ReplyMarkup);
             }
         }

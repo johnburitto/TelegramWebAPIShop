@@ -31,15 +31,15 @@ namespace Bot.Base
                 case UpdateType.Message:
                 {
                     await MessageHandlerAsync(client, update.Message ?? throw new Exception("Message can't be null"));
-                }break;
+                }return;
                 case  UpdateType.CallbackQuery:
                 {
                     await MessageHandlerAsync(client, update.CallbackQuery ?? throw new Exception("Callback query can't be null"));
-                }break;
+                }return;
                 default:
                 {
-                
-                }break;
+                    
+                }return;
             }
         }
 

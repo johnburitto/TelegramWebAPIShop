@@ -29,12 +29,14 @@ namespace Bot.Commands
                 }
             });
             var photo = await RequestClient.Client.GetAsync(product?.Thumbnails?.First()?.URI ?? "");
+            var discountPrice = product?.Price - product?.Price *
+                product?.Discounts?.Where(discount => discount.Status == DiscountStatus.Active).Select(discount => discount.NormalizedDiscount).Sum(); 
 
             await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.Html,
                 photo: InputFile.FromStream(photo.Content.ReadAsStream()),
                 caption: $"<b>{product?.Name} [{product?.Id}]</b>\n\n" +
                          $"{product?.Description}\n\n" +
-                         $"<b>Ціна:</b> {product?.Price}",
+                         (discountPrice < product?.Price ? $"<b>Ціна:</b><s> {product?.Price} </s>\t{discountPrice}" : $"<b>Ціна:</b> {product?.Price}"),
                 replyMarkup: keyboard);
         }
 

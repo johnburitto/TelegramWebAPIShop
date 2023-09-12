@@ -30,9 +30,11 @@ namespace Bot.Commands
             {
                 var productResponse = await RequestClient.Client.GetAsync($"api/Product/{el.Key}");
                 var product = JsonConvert.DeserializeObject<Product>(await productResponse.Content.ReadAsStringAsync());
-                
+                var discountPrice = product?.Price - product?.Price *
+                    product?.Discounts?.Where(discount => discount.Status == DiscountStatus.Active).Select(discount => discount.NormalizedDiscount).Sum();
+
                 cartString += $"{index}\\. *{product?.Name}*\tx{el.Value}\n";
-                totalAmount += el.Value * product?.Price;
+                totalAmount += el.Value * (discountPrice < product?.Price ? discountPrice : product?.Price);
                 index++;
             }
 

@@ -14,7 +14,7 @@ namespace Bot.Estensions
             {
                 try
                 {
-                    dictionary.TryAdd(el, list.CountOfElement(el));
+                    dictionary.TryAdd(el, list.Where(item => item == el).Count());
                 }
                 catch (Exception)
                 {
@@ -23,21 +23,6 @@ namespace Bot.Estensions
             }
 
             return dictionary;
-        }
-
-        public static int CountOfElement(this List<int> list, int element)
-        {
-            int number = 0;
-
-            foreach (var el in list)
-            {
-                if (el == element)
-                {
-                    number++; 
-                }
-            }
-
-            return number;
         }
     }
 }
