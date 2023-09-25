@@ -25,7 +25,7 @@ namespace Bot.Commands
                 },
                 new []
                 {
-                    InlineKeyboardButton.WithCallbackData("🛒 Додати до кошика", "add_to_cart")
+                    InlineKeyboardButton.WithCallbackData("🛒 Додати до корзини", "add_to_cart")
                 }
             });
             var photo = await RequestClient.Client.GetAsync(product?.Thumbnails?.First()?.URI ?? "");

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bot.Estensions
+﻿namespace Bot.Estensions
 {
     public static class ListExtensions
     {

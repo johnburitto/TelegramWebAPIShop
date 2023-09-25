@@ -28,6 +28,9 @@ namespace Infrastructure.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
+            builder.Property(order => order.TotalPrise)
+                .IsRequired();
+
             builder.HasMany(order => order.Products)
                 .WithMany(product => product.Orders)
                 .UsingEntity(join => join.ToTable("OrderedProducts"));

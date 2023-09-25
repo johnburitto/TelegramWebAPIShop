@@ -13,7 +13,7 @@ namespace Bot.Commands
             ReplyKeyboardMarkup keyboard = new(new[]
             {
                 new KeyboardButton[] { "🎁 Всі товари" },
-                new KeyboardButton[] { "🛒 Мій кошик" }
+                new KeyboardButton[] { "🛒 Моя корзина" }
             })
             {
                 ResizeKeyboard = true

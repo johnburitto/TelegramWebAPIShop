@@ -3,6 +3,7 @@ using Bot.Extensions;
 using Bot.HttpInfrastructure;
 using Core.Entities;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -10,17 +11,28 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Commands
 {
-    public class GetCartCommand : Command
+    public class RemoveAllProductItemsFromCartCommand : Command
     {
-        protected override List<string> Names { get; set; } = new() { "🛒 Моя корзина" };
+        protected override List<string> Names { get; set; } = new() { "remove_all_from_cart" };
 
-        public override async Task Execute(ITelegramBotClient client, Message message)
+        public override Task Execute(ITelegramBotClient client, Message message)
         {
-            var response = await RequestClient.Client.GetAsync($"api/Cart/{message.From?.Id}");
+            throw new NotImplementedException();
+        }
+
+        public override async Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
+        {
+            var mathes = Regex.Match(callbackQuery.Message?.Caption ?? "", @"\[\d+\]");
+            var id = mathes.Captures.First().Value.Replace("[", "").Replace("]", "");
+
+            await RequestClient.Client.DeleteAsync($"api/Cart/{callbackQuery.From.Id}/{id}/{true}");
+
+            var response = await RequestClient.Client.GetAsync($"api/Cart/{callbackQuery.From.Id}");
 
             if (await response.Content.ReadAsStringAsync() == string.Empty || await response.Content.ReadAsStringAsync() == "[]")
             {
-                await client.SendTextMessageAsync(message.Chat.Id, "Ваша корзина порожня 🫙");
+                await client.DeleteMessageAsync(callbackQuery!.Message!.Chat, callbackQuery!.Message!.MessageId);
+                await client.SendTextMessageAsync(callbackQuery!.Message!.Chat.Id, "Ваша корзина порожня 🫙");
 
                 return;
             }
@@ -51,16 +63,13 @@ namespace Bot.Commands
                 }
             });
 
-            await client.SendPhotoAsync(message.Chat.Id, parseMode: ParseMode.Html,
-                photo: InputFile.FromStream(photo.Content.ReadAsStream()),
-                caption: $"<b>{product?.Name} [{product?.Id}]</b> x{cartDictionary?.Where(el => el.Key == product?.Id).First().Value}\n\n" +
-                         $"{product?.Description}\n\n",
-                replyMarkup: keyboard);
-        }
-
-        public override Task Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
-        {
-            throw new NotImplementedException();
+            await client.EditMessageMediaAsync(callbackQuery?.Message?.Chat ?? throw new Exception("Chat can't be null"),
+                    callbackQuery.Message.MessageId, media: new InputMediaPhoto(InputFile.FromStream(photo.Content.ReadAsStream(), "photo")));
+            await client.EditMessageCaptionAsync(callbackQuery.Message?.Chat ?? throw new Exception("Chat can't be null"),
+                    callbackQuery.Message.MessageId, parseMode: ParseMode.Html,
+                    caption: $"<b>{product?.Name} [{product?.Id}]</b> x{cartDictionary?.Where(el => el.Key == product?.Id).First().Value}\n\n" +
+                             $"{product?.Description}\n\n",
+                    replyMarkup: keyboard);
         }
     }
 }

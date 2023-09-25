@@ -50,5 +50,13 @@ namespace WebAPI.Controllers
         {
             await _service.RemoveDataAsync(key);
         }
+
+        [HttpDelete("{key}/{id}/{isRemoveAll}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task RemoveProductFromCartAsync(string key, int id, bool isRemoveAll)
+        {
+            await _service.RemoveProductFromCartAsync(key, id, isRemoveAll);
+        }
     }
 }

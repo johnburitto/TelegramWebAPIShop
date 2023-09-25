@@ -20,7 +20,11 @@ namespace Bot.Base
                 new GetNextProductCommand(),
                 new GetPreviousProductCommand(),
                 new AddProductToCartCommand(),
-                new GetCartCommand()
+                new GetCartCommand(),
+                new GetNextProductFromCartCommand(),
+                new GetPreviousProdcutFromCartCommand(),
+                new RemoveAllProductItemsFromCartCommand(),
+                new RemoveOneProductItemFromCartCommand()
             };
         }
 

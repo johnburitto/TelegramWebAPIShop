@@ -44,5 +44,21 @@ namespace Infrastructure.Services.Impls
 
             return await GetDataAsync<List<int>>(key);
         }
+
+        public async Task RemoveProductFromCartAsync(string key, int id, bool isRemoveAll)
+        {
+            var cart = await GetDataAsync<List<int>>(key) ?? throw new ArgumentNullException($"There is no cart with user id {key}");
+
+            if (isRemoveAll)
+            {
+                cart.RemoveAll(el => el == id);
+            }
+            else
+            {
+                cart.Remove(cart.Where(el => el == id).First());
+            }
+
+            await SetDataAsync(key, cart, 3);
+        }
     }
 }
