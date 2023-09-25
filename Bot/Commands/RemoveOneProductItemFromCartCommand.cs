@@ -3,7 +3,6 @@ using Bot.Extensions;
 using Bot.HttpInfrastructure;
 using Core.Entities;
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -60,7 +59,7 @@ namespace Bot.Commands
                 },
                 new[]
                 {
-                    InlineKeyboardButton.WithCallbackData("Офоромити замовлення", "order")
+                    InlineKeyboardButton.WithCallbackData("Офоромити замовлення", "start_ordering")
                 }
             });
 

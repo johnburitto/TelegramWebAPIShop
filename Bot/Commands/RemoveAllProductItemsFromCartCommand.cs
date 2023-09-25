@@ -59,7 +59,7 @@ namespace Bot.Commands
                 },
                 new[]
                 {
-                    InlineKeyboardButton.WithCallbackData("Офоромити замовлення", "order")
+                    InlineKeyboardButton.WithCallbackData("Офоромити замовлення", "start_ordering")
                 }
             });
 

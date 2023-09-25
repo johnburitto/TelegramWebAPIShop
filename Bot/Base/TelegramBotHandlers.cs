@@ -1,4 +1,7 @@
 ﻿using Bot.Commands;
+using Bot.HttpInfrastructure;
+using Infrastructure.StateMachine;
+using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -9,6 +12,7 @@ namespace Bot.Base
     public class TelegramBotHandlers : ITelegramBotHandlers
     {
         private readonly List<Command> _commands;
+        private readonly List<Command> _stateCommands;
 
         public TelegramBotHandlers()
         {
@@ -24,7 +28,13 @@ namespace Bot.Base
                 new GetNextProductFromCartCommand(),
                 new GetPreviousProdcutFromCartCommand(),
                 new RemoveAllProductItemsFromCartCommand(),
-                new RemoveOneProductItemFromCartCommand()
+                new RemoveOneProductItemFromCartCommand(),
+                new StartOrderingCommand()
+            };
+            _stateCommands = new List<Command>()
+            {
+                new GetPhoneCommand(),
+                new EndOrderingCommand()
             };
         }
 
@@ -33,17 +43,27 @@ namespace Bot.Base
             switch (update.Type)
             {
                 case UpdateType.Message:
-                {
-                    await MessageHandlerAsync(client, update.Message ?? throw new Exception("Message can't be null"));
-                }return;
+                    {
+                        if (await StateMachineHandlerAsync(client, update))
+                        {
+                            return;
+                        } 
+
+                        await MessageHandlerAsync(client, update.Message ?? throw new Exception("Message can't be null"));
+                    }return;
                 case  UpdateType.CallbackQuery:
-                {
-                    await MessageHandlerAsync(client, update.CallbackQuery ?? throw new Exception("Callback query can't be null"));
-                }return;
+                    {
+                        if (await StateMachineHandlerAsync(client, update))
+                        {
+                            return;
+                        }
+
+                        await MessageHandlerAsync(client, update.CallbackQuery ?? throw new Exception("Callback query can't be null"));
+                    }return;
                 default:
-                {
-                    
-                }return;
+                    {
+
+                    }return;
             }
         }
 
@@ -73,6 +93,49 @@ namespace Bot.Base
             foreach (var el in _commands)
             {
                 await el.TryExecute(client, callbackQuery);
+            }
+        }
+
+        private async Task<bool> StateMachineHandlerAsync(ITelegramBotClient client, Update update)
+        {
+            var userId = update.Message == null ? update!.CallbackQuery!.From.Id : update!.Message!.From!.Id;
+            var isUserHasStateResponse = await RequestClient.Client.GetAsync($"api/StateMachine/state_machine/{userId}/is-has-state");
+
+            if (await isUserHasStateResponse.Content.ReadAsStringAsync() == string.Empty)
+            {
+                return false;
+            }
+
+            var isUserHasState = JsonConvert.DeserializeObject<bool>(await isUserHasStateResponse.Content.ReadAsStringAsync());
+
+            if (isUserHasState)
+            {
+                var stateResponse = await RequestClient.Client.GetAsync($"api/StateMachine/state_machine/{userId}/state");
+                var state = JsonConvert.DeserializeObject<State>(await stateResponse.Content.ReadAsStringAsync());
+
+                await StateMachineHandlerAsync(client, update, state?.CurrentState ?? "");
+            }
+
+            return isUserHasState;
+        }
+
+        private async Task StateMachineHandlerAsync(ITelegramBotClient client, Update update, string state)
+        {
+            switch (state)
+            {
+                case "get_phone":
+                    {
+                        await _stateCommands!.Where(c => c.GetType() == typeof(GetPhoneCommand)).First().TryExecute(client, update.Message!);
+                    }return;
+                case "get_address":
+                    {
+                        await _stateCommands!.Where(c => c.GetType() == typeof(EndOrderingCommand)).First().TryExecute(client, update.Message!);
+                    }
+                    return;
+                default:
+                    {
+
+                    }return;
             }
         }
     }
