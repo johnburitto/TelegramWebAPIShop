@@ -80,5 +80,13 @@ namespace WebAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("user/{id}")]
+        [ProducesResponseType(typeof(List<Order>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<Order>>> GetAllAsync(string id)
+        {
+            return Ok(await _service.GetUserOrdersAsync(id));
+        }
     }
 }

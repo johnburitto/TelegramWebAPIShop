@@ -6,6 +6,6 @@ namespace Infrastructure.Services.Interfaces
 {
     public interface IOrderService : ICrudService<Order, OrderCreateDto, OrderUpdateDto>
     {
-
+        Task<List<Order>> GetUserOrdersAsync(string id);
     }
 }

@@ -12,6 +12,10 @@ namespace Infrastructure.Configurations
                 .UseIdentityColumn()
                 .IsRequired();
 
+            builder.Property(order => order.Status)
+                .HasConversion<string>()
+                .IsRequired();
+
             builder.Property(order => order.UserTelegramId)
                 .HasMaxLength(12)
                 .IsRequired();

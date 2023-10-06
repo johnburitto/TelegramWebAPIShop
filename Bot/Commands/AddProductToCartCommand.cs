@@ -38,7 +38,7 @@ namespace Bot.Commands
             var id = mathes.Captures.First().Value.Replace("[", "").Replace("]", "");
 
             await RequestClient.Client.PostAsync($"api/Cart/add/{callbackQuery.From.Id}/{id}", null);
-            await client.SendTextMessageAsync(callbackQuery!.Message!.Chat.Id, "Товар успішно додано ✅");
+            await client.SendTextMessageAsync(callbackQuery!.Message!.Chat.Id, "✅ Товар успішно додано");
         }
     }
 }

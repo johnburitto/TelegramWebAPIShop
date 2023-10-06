@@ -29,7 +29,10 @@ namespace Bot.Base
                 new GetPreviousProdcutFromCartCommand(),
                 new RemoveAllProductItemsFromCartCommand(),
                 new RemoveOneProductItemFromCartCommand(),
-                new StartOrderingCommand()
+                new StartOrderingCommand(),
+                new GetOrdersCommand(),
+                new GetPreviousOrderCommand(),
+                new GetNextOrderCommand()
             };
             _stateCommands = new List<Command>()
             {

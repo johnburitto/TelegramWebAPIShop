@@ -55,6 +55,11 @@ namespace Infrastructure.Services.Impls
                 .FirstOrDefaultAsync();
         }
 
+        public Task<List<Order>> GetUserOrdersAsync(string id)
+        {
+            return _context.Orders.Where(order => order.UserTelegramId == id).Include(order => order.Products).ToListAsync();
+        }
+
         public async Task<Order> UpdateAsync(OrderUpdateDto dto)
         {
             var order = await GetByIdAsync(dto.Id) ?? throw new ArgumentNullException($"There is no order with Id {dto.Id}");

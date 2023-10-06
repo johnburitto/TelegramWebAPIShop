@@ -3,6 +3,7 @@ using Bot.Extensions;
 using Bot.HttpInfrastructure;
 using Bot.StateObjects;
 using Core.Dtos.Create;
+using Core.Entities;
 using Infrastructure.StateMachine;
 using Newtonsoft.Json;
 using System.Text;
@@ -28,6 +29,7 @@ namespace Bot.Commands
 
                 var orederDto = new OrderCreateDto()
                 {
+                    Status = OrderStatus.Created,
                     UserTelegramId = message.From?.Id.ToString(),
                     Name = $"{message.From?.FirstName} {message.From?.LastName}",
                     Phone = (state!.StateObject as PhoneDto)!.Phone,
