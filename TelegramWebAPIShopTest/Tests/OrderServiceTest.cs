@@ -269,5 +269,94 @@ namespace TelegramWebAPIShopTest.Tests
             _context.Verify(_ => _.Orders.Remove(It.IsAny<Order>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
+
+        [Fact]
+        public async void GetUserOrdersAsyncTest_NormalFlow()
+        {
+            // Given
+            var orders = new List<Order>()
+            {
+                new Order
+                {
+                    Id = 1,
+                    UserTelegramId = "360604916",
+                    Name = "Some name",
+                    Phone = "Some phone",
+                    Address = "Some address"
+                },
+                new Order
+                {
+                    Id = 2,
+                    UserTelegramId = "605990872",
+                    Name = "Some other name",
+                    Phone = "Some other phone",
+                    Address = "Some other address"
+                },
+                new Order
+                {
+                    Id = 3,
+                    UserTelegramId = "605990872",
+                    Name = "Some third name",
+                    Phone = "Some third phone",
+                    Address = "Some third address"
+                }
+            };
+            var userTelegramId = "605990872";
+
+            // When
+            _context.Setup(_ => _.Orders).ReturnsDbSet(orders);
+
+            var result = await _underTest.GetUserOrdersAsync(userTelegramId);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(2, result.Count);
+            Assert.Equal(orders[1], result[0]);
+            Assert.Equal(orders[2], result[1]);
+        }
+
+        [Fact]
+        public async void GetUserOrdersAsyncTest_UserDoesNotHaveOrders()
+        {
+            // Given
+            var orders = new List<Order>()
+            {
+                new Order
+                {
+                    Id = 1,
+                    UserTelegramId = "360604916",
+                    Name = "Some name",
+                    Phone = "Some phone",
+                    Address = "Some address"
+                },
+                new Order
+                {
+                    Id = 2,
+                    UserTelegramId = "605990872",
+                    Name = "Some other name",
+                    Phone = "Some other phone",
+                    Address = "Some other address"
+                },
+                new Order
+                {
+                    Id = 3,
+                    UserTelegramId = "605990872",
+                    Name = "Some third name",
+                    Phone = "Some third phone",
+                    Address = "Some third address"
+                }
+            };
+            var userTelegramId = "603130427";
+
+            // When
+            _context.Setup(_ => _.Orders).ReturnsDbSet(orders);
+
+            var result = await _underTest.GetUserOrdersAsync(userTelegramId);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace Infrastructure.Services.Impls
         }
 
         public async Task SetDataAsync<T>(string key, T value, int expirationTimeInHours)
-        {
+        { 
             var valueString = JsonConvert.SerializeObject(value);
             var options = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromHours(expirationTimeInHours))

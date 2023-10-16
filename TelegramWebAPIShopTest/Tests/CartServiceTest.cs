@@ -12,7 +12,7 @@ namespace TelegramWebAPIShopTest.Tests
 
         public CartServiceTest()
         {
-            var options = Options.Create<MemoryDistributedCacheOptions>(new MemoryDistributedCacheOptions());
+            var options = Options.Create(new MemoryDistributedCacheOptions());
             
             _redis = new MemoryDistributedCache(options);
             _underTest = new CartService(_redis);
@@ -121,6 +121,126 @@ namespace TelegramWebAPIShopTest.Tests
 
             // Then
             Assert.Equal($"Value cannot be null. (Parameter 'There is no cart with user id {badKey}')", result.Message);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveOne_NormalFlow()
+        {
+            // Given
+            var key = "1";
+            var value = new List<int> { 1, 2, 3 };
+            var elToDelete = 2;
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+            await _underTest.RemoveProductFromCartAsync(key, elToDelete, false);
+
+            var result = await _underTest.GetDataAsync<List<int>>(key);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.NotSame(value, result);
+            Assert.Equal(value.Count - 1, result.Count);
+            Assert.DoesNotContain(elToDelete, result);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveOne_BadKey()
+        {
+            // Given
+            var key = "1";
+            var badKey = "2";
+            var value = new List<int> { 1, 2, 3 };
+            var elToDelete = 2;
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+
+            var result = await Assert.ThrowsAsync<ArgumentNullException>(async () => await _underTest.RemoveProductFromCartAsync(badKey, elToDelete, false));
+
+            // Then
+            Assert.Equal($"Value cannot be null. (Parameter 'There is no cart with user id {badKey}')", result.Message);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveAll_RemoveProductThatIsNotInCart()
+        {
+            // Given
+            var key = "1";
+            var value = new List<int> { 1, 2, 3 };
+            var elToDelete = 4;
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+
+            var result = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _underTest.RemoveProductFromCartAsync(key, elToDelete, false));
+
+            // Then
+            Assert.Equal($"Sequence contains no elements", result.Message);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveAll_NormalFlow()
+        {
+            // Given
+            var key = "1";
+            var value = new List<int> { 1, 2, 3, 2, 4, 5, 1, 2, 2, 2 };
+            var elToDelete = 2;
+            var numberOfElToDelete = value.Where(el => el == elToDelete).Count();
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+            await _underTest.RemoveProductFromCartAsync(key, elToDelete, true);
+
+            var result = await _underTest.GetDataAsync<List<int>>(key);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.NotSame(value, result);
+            Assert.Equal(value.Count - numberOfElToDelete, result.Count);
+            Assert.DoesNotContain(elToDelete, result);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveAll_BadKey()
+        {
+            // Given
+            var key = "1";
+            var badKey = "2";
+            var value = new List<int> { 1, 2, 3 };
+            var elToDelete = 2;
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+
+            var result = await Assert.ThrowsAsync<ArgumentNullException>(async () => await _underTest.RemoveProductFromCartAsync(badKey, elToDelete, true));
+
+            // Then
+            Assert.Equal($"Value cannot be null. (Parameter 'There is no cart with user id {badKey}')", result.Message);
+        }
+
+        [Fact]
+        public async void RemoveProductFromCartAsyncTest_RemoveOne_RemoveProductThatIsNotInCart()
+        {
+            // Given
+            var key = "1";
+            var value = new List<int> { 1, 2, 3 };
+            var elToDelete = 4;
+
+            // When
+            await _underTest.SetDataAsync(key, value, 4);
+            await _underTest.RemoveProductFromCartAsync(key, elToDelete, true);
+
+            var result = await _underTest.GetDataAsync<List<int>>(key);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.NotSame(value, result);
+            Assert.Equal(value.Count, result.Count);
+            Assert.Equal(value, result);
         }
     }
 }

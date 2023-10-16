@@ -247,5 +247,225 @@ namespace TelegramWebAPIShopTest.Tests
             _context.Verify(_ => _.Products.Remove(It.IsAny<Product>()), Times.Once());
             _context.Verify(_ => _.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
+
+        [Fact]
+        public async void TryGetNextAsyncTest_NormalFlow()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some other name",
+                    Description = "Some other desc",
+                    Price = 100
+                }
+            };
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await _underTest.TryGetNextAsync(products[0].Id);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.IsType<Product>(result);
+            Assert.Contains(result, products);
+            Assert.NotEqual(products[0], result);
+            Assert.Equal(products[1], result);
+        }
+
+        [Fact]
+        public async void TryGetNextAsyncTest_GetNextFromProductThatDoesNotExist()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some other name",
+                    Description = "Some other desc",
+                    Price = 100
+                }
+            };
+            var id = 3;
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await Assert.ThrowsAsync<Exception>(async () => await _underTest.TryGetNextAsync(id));
+
+            // Then
+            Assert.Equal($"There isn't product with id {id}", result.Message);
+        }
+
+        [Fact]
+        public async void TryGetNextAsyncTest_GetNextWhenCurrentProductIsLast()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 3,
+                    Name = "Some third name",
+                    Description = "Some third desc",
+                    Price = 100
+                }
+            };
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await _underTest.TryGetNextAsync(products[2].Id);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.IsType<Product>(result);
+            Assert.Contains(result, products);
+            Assert.NotEqual(products[0], result);
+            Assert.NotEqual(products[1], result);
+            Assert.Equal(products[2], result);
+        }
+
+        [Fact]
+        public async void TryGetPreviousAsyncTest_NormalFlow()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some other name",
+                    Description = "Some other desc",
+                    Price = 100
+                }
+            };
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await _underTest.TryGetPreviousAsync(products[1].Id);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.IsType<Product>(result);
+            Assert.Contains(result, products);
+            Assert.NotEqual(products[1], result);
+            Assert.Equal(products[0], result);
+        }
+
+        [Fact]
+        public async void TryGetPreviousAsyncTest_GetPreviousFromProductThatDoesNotExist()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some other name",
+                    Description = "Some other desc",
+                    Price = 100
+                }
+            };
+            var id = 3;
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await Assert.ThrowsAsync<Exception>(async () => await _underTest.TryGetPreviousAsync(id));
+
+            // Then
+            Assert.Equal($"There isn't product with id {id}", result.Message);
+        }
+
+        [Fact]
+        public async void TryGetPrevioustAsyncTest_GetPreviousWhenCurrentProductIsFirst()
+        {
+            // Given
+            var products = new List<Product>()
+            {
+                new Product
+                {
+                    Id = 1,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 2,
+                    Name = "Some name",
+                    Description = "Some desc",
+                    Price = 100
+                },
+                new Product
+                {
+                    Id = 3,
+                    Name = "Some third name",
+                    Description = "Some third desc",
+                    Price = 100
+                }
+            };
+
+            _context.Setup(_ => _.Products).ReturnsDbSet(products);
+
+            // When
+            var result = await _underTest.TryGetPreviousAsync(products[0].Id);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.IsType<Product>(result);
+            Assert.Contains(result, products);
+            Assert.NotEqual(products[1], result);
+            Assert.NotEqual(products[2], result);
+            Assert.Equal(products[0], result);
+        }
     }
 }
