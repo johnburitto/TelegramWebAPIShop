@@ -53,9 +53,10 @@ namespace Infrastructure.StateMachine
         public async Task ChangeStateAsync(string key, State state)
         {
             var states = await GetDataAsync<List<State>>(key);
-            var currentState = states!.Find(s => s.UserTelegramId == state.UserTelegramId);
+            var currentState = states!.Find(s => s.UserTelegramId == state.UserTelegramId) ?? 
+                throw new Exception($"State with user telegram id {state.UserTelegramId} doesn't exist.");
 
-            states.Remove(currentState ?? new());
+            states.Remove(currentState);
             states.Add(state);
 
             await SetDataAsync(key, states, 720);
